@@ -11,21 +11,21 @@ const {
 
 const router = express.Router();
 
-router.post("/login", login);
+router.post("/auth/login", login);
 router.post(
-  "/registration",
+  "/auth/registration",
   isAuthorized({
     allowedRole: ["manager", "admin"],
   }),
   register
 );
 router.put(
-  "/update-permissions/:userId",
+  "/auth/update-permissions/:userId",
   isAuthorized({
     allowedRole: ["manager"],
   })
 );
-router.get("/is-logged-in", isLoggedIn);
-router.get("/logout", logout);
+router.get("/auth/is-logged-in", isLoggedIn);
+router.get("/auth/logout", logout);
 
 module.exports = router;

@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
     default: "individual",
     required: false,
   },
-  Permissions: ["create", "read", "update", "delete"],
+  permissions: ["create", "read", "update", "delete"],
   addedBy: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
@@ -46,26 +46,5 @@ const userSchema = new mongoose.Schema({
   passwordResetToken: String,
   passwordResetExpires: Date,
 });
-
-// Encrypt password using bcrypt
-userSchema.methods.getJwtToken = function () {
-  return jwt.sign(
-    { id: this._id, role: this.role, permissions: this.permissions },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: process.env.JWT_EXPIRES_TIME,
-    }
-  );
-};
-
-// Match user entered password to hashed password in database
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
-
-// Generate and hash password token
-userSchema.methods.hashPassword = async function () {
-  return await bcrypt.hash(this.password, 12);
-};
 
 module.exports = mongoose.model("User", userSchema);
