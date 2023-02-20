@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 exports.isAuthorized = ({ allowedRole, allowedPermissions }) => {
   return (req, res, next) => {
@@ -8,31 +8,29 @@ exports.isAuthorized = ({ allowedRole, allowedPermissions }) => {
       if (!token) {
         return res.status(401).json({
           success: false,
-          message: "Unauthorized",
+          message: 'Unauthorized',
         });
       }
 
       const decoder = jwt.verify(token, process.env.JWT_SECRET);
 
       const { role, permissions } = decoder;
-      console.log(permissions)
+      console.log(permissions);
 
       if (allowedRole?.length && !allowedRole.includes(role)) {
         return res.status(401).json({
           success: false,
-          message: "Unauthorized",
+          message: 'Unauthorized',
         });
       }
 
       if (
         allowedPermissions &&
-        !allowedPermissions.some((permission) =>
-          permissions.includes(permission)
-        )
+        !allowedPermissions.some((permission) => permissions.includes(permission))
       ) {
         return res.status(401).json({
           success: false,
-          message: "Unauthorized",
+          message: 'Unauthorized',
         });
       }
 
@@ -47,7 +45,7 @@ exports.isAuthorized = ({ allowedRole, allowedPermissions }) => {
       console.log(error);
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: 'Unauthorized',
       });
     }
   };

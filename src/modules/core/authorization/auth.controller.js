@@ -1,9 +1,9 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-const cookieOptions = require("../../../utils/cookie");
-const userSchema = require("../../models/user.model");
-const { RegistrationSchema } = require("../../core/authorization/auth.dto");
+const cookieOptions = require('../../../utils/cookie');
+const userSchema = require('../../models/user.model');
+const { RegistrationSchema } = require('../../core/authorization/auth.dto');
 
 const register = async (req, res) => {
   try {
@@ -20,25 +20,17 @@ const register = async (req, res) => {
       });
     }
 
-    const {
-      userName,
-      fullName,
-      email,
-      password,
-      confirmPassword,
-      permissions,
-    } = isValidData.data;
+    const { userName, fullName, email, password, confirmPassword, permissions } = isValidData.data;
 
     console.log(password, confirmPassword);
 
     const invalidPermissions = permissions.filter(
-      (permission) =>
-        !["create", "read", "update", "delete"].includes(permission)
+      (permission) => !['create', 'read', 'update', 'delete'].includes(permission)
     );
     if (invalidPermissions.length) {
       return res.status(400).json({
         success: false,
-        message: "Invalid permissions",
+        message: 'Invalid permissions',
       });
     }
 
@@ -49,7 +41,7 @@ const register = async (req, res) => {
     if (password !== confirmPassword) {
       return res.status(400).json({
         success: false,
-        message: "Passwords does not match",
+        message: 'Passwords does not match',
       });
     }
 
@@ -58,7 +50,7 @@ const register = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: "User already exists",
+        message: 'User already exists',
       });
     }
 
@@ -70,12 +62,7 @@ const register = async (req, res) => {
       fullName,
       email,
       password: hashedPassword,
-      role:
-        role === "manager"
-          ? "admin"
-          : role === "admin"
-          ? "customer"
-          : "customer",
+      role: role === 'manager' ? 'admin' : role === 'admin' ? 'customer' : 'customer',
       permissions: uniquePermissions.length ? uniquePermissions : [],
       addedBy: id,
     });
@@ -88,7 +75,7 @@ const register = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: "User created successfully",
+      message: 'User created successfully',
       data: {
         user: userData,
       },
@@ -96,7 +83,7 @@ const register = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };
@@ -108,16 +95,16 @@ const login = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: "Please provide email and password",
+        message: 'Please provide email and password',
       });
     }
 
-    const user = await userSchema.findOne({ email }).select("+password");
+    const user = await userSchema.findOne({ email }).select('+password');
 
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Invalid credentials",
+        message: 'Invalid credentials',
       });
     }
 
@@ -126,7 +113,7 @@ const login = async (req, res) => {
     if (!isPasswordCorrect) {
       return res.status(400).json({
         success: false,
-        message: "Invalid credentials",
+        message: 'Invalid credentials',
       });
     }
 
@@ -137,9 +124,9 @@ const login = async (req, res) => {
 
     const { password: __, ...userData } = user.toObject();
 
-    return res.cookie("token", token, cookieOptions()).json({
+    return res.cookie('token', token, cookieOptions()).json({
       success: true,
-      message: "Logged in successfully",
+      message: 'Logged in successfully',
       data: {
         user: userData,
         token,
@@ -148,7 +135,7 @@ const login = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };
@@ -160,7 +147,7 @@ const isLoggedIn = async (req, res) => {
     if (!cookie) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: 'Unauthorized',
       });
     }
 
@@ -171,13 +158,13 @@ const isLoggedIn = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: 'Unauthorized',
       });
     }
 
     return res.json({
       success: true,
-      message: "Authorized",
+      message: 'Authorized',
       data: {
         user,
       },
@@ -185,7 +172,7 @@ const isLoggedIn = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };
@@ -200,19 +187,18 @@ const updatePermissions = async (req, res) => {
     if (!Array.isArray(permissions)) {
       return res.status(400).json({
         success: false,
-        message: "Permissions must be an array",
+        message: 'Permissions must be an array',
       });
     }
 
     const invalidPermissions = permissions.filter(
-      (permission) =>
-        !["create", "read", "update", "delete"].includes(permission)
+      (permission) => !['create', 'read', 'update', 'delete'].includes(permission)
     );
 
     if (invalidPermissions.length) {
       return res.status(400).json({
         success: false,
-        message: `Invalid permissions: ${invalidPermissions.join(", ")}`,
+        message: `Invalid permissions: ${invalidPermissions.join(', ')}`,
       });
     }
 
@@ -223,7 +209,7 @@ const updatePermissions = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: 'User not found',
       });
     }
 
@@ -235,7 +221,7 @@ const updatePermissions = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Permissions updated successfully",
+      message: 'Permissions updated successfully',
       data: {
         user: updateUserPermissions,
       },
@@ -243,21 +229,21 @@ const updatePermissions = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };
 
 const logout = async (req, res) => {
   try {
-    res.clearCookie("token").json({
+    res.clearCookie('token').json({
       success: true,
-      message: "Logged out successfully",
+      message: 'Logged out successfully',
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };
