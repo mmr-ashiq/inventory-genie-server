@@ -1,22 +1,22 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const morgan = require("morgan");
-const bycrpt = require("bcryptjs");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
+const express = require('express');
+const dotenv = require('dotenv');
+const morgan = require('morgan');
+const bycrpt = require('bcryptjs');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
-const connectDB = require("./src/config/db/db.connection");
+const connectDB = require('./src/config/db/db.connection');
 // const { PORT } = require("./src/config/server.config");
-const routes = require("./src/modules/core/rootRouter");
+const routes = require('./src/modules/core/rootRouter');
 
-dotenv.config({ path: "./.env" });
+dotenv.config({ path: './.env' });
 
 const app = express();
 
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(morgan("common"));
+app.use(morgan('common'));
 app.use(
   cors({
     origin: process.env.CLIENT_ORIGIN,
@@ -27,12 +27,12 @@ app.use(
 // routes
 app.use(routes);
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+app.get('/', (req, res) => {
+  res.send('Hello World!');
 });
 
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
 }
 
 connectDB();

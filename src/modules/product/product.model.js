@@ -1,17 +1,17 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Please enter product name"],
+      required: [true, 'Please enter product name'],
       trim: true,
-      maxLength: [100, "Product name cannot exceed 100 characters"],
+      maxLength: [100, 'Product name cannot exceed 100 characters'],
     },
     company: {
       type: String,
       trim: true,
-      maxLength: [50, "Your company name cannot exceed 50 characters"],
+      maxLength: [50, 'Your company name cannot exceed 50 characters'],
     },
     images: [
       {
@@ -20,8 +20,8 @@ const productSchema = new mongoose.Schema(
     ],
     description: {
       type: String,
-      required: [true, "Please enter product description"],
-      maxLength: [500, "Product description cannot exceed 500 characters"],
+      required: [true, 'Please enter product description'],
+      maxLength: [500, 'Product description cannot exceed 500 characters'],
     },
     variants: [
       {
@@ -30,35 +30,35 @@ const productSchema = new mongoose.Schema(
     ],
     price: {
       type: Number,
-      required: [true, "Please enter product price"],
-      maxLength: [10, "Product price cannot exceed 10 characters"],
+      required: [true, 'Please enter product price'],
+      maxLength: [10, 'Product price cannot exceed 10 characters'],
       default: 0.0,
     },
     discount: {
       type: Number,
-      maxLength: [10, "Product discount cannot exceed 10 characters"],
+      maxLength: [10, 'Product discount cannot exceed 10 characters'],
       default: 0.0,
     },
     stock: {
       type: Number,
-      required: [true, "Please enter product stock"],
-      maxLength: [5, "Product stock cannot exceed 5 characters"],
+      required: [true, 'Please enter product stock'],
+      maxLength: [5, 'Product stock cannot exceed 5 characters'],
       default: 0,
     },
     shopId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
     sold: [
       {
         sellerId: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
+          ref: 'User',
         },
         customerId: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
+          ref: 'User',
         },
         quantity: {
           type: Number,
@@ -72,4 +72,4 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model('Product', productSchema);

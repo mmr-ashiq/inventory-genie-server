@@ -20,12 +20,20 @@ const register = async (req, res) => {
       });
     }
 
-    const { userName, fullName, email, password, confirmPassword, permissions } = isValidData.data;
+    const {
+      userName,
+      fullName,
+      email,
+      password,
+      confirmPassword,
+      permissions,
+    } = isValidData.data;
 
     console.log(password, confirmPassword);
 
     const invalidPermissions = permissions.filter(
-      (permission) => !['create', 'read', 'update', 'delete'].includes(permission)
+      (permission) =>
+        !['create', 'read', 'update', 'delete'].includes(permission)
     );
     if (invalidPermissions.length) {
       return res.status(400).json({
@@ -62,7 +70,12 @@ const register = async (req, res) => {
       fullName,
       email,
       password: hashedPassword,
-      role: role === 'manager' ? 'admin' : role === 'admin' ? 'customer' : 'customer',
+      role:
+        role === 'manager'
+          ? 'admin'
+          : role === 'admin'
+          ? 'customer'
+          : 'customer',
       permissions: uniquePermissions.length ? uniquePermissions : [],
       addedBy: id,
     });
@@ -192,7 +205,8 @@ const updatePermissions = async (req, res) => {
     }
 
     const invalidPermissions = permissions.filter(
-      (permission) => !['create', 'read', 'update', 'delete'].includes(permission)
+      (permission) =>
+        !['create', 'read', 'update', 'delete'].includes(permission)
     );
 
     if (invalidPermissions.length) {

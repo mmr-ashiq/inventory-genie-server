@@ -26,7 +26,9 @@ exports.isAuthorized = ({ allowedRole, allowedPermissions }) => {
 
       if (
         allowedPermissions &&
-        !allowedPermissions.some((permission) => permissions.includes(permission))
+        !allowedPermissions.some((permission) =>
+          permissions.includes(permission)
+        )
       ) {
         return res.status(401).json({
           success: false,

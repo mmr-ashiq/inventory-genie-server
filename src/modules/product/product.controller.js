@@ -1,8 +1,8 @@
-const { addProductSchema } = require("./product.dto");
-const productSchema = require("../models/product.model");
-const userSchema = require("../models/user.model");
-const cloudinary = require("cloudinary").v2;
-const dotenv = require("dotenv");
+const { addProductSchema } = require('./product.dto');
+const productSchema = require('../models/product.model');
+const userSchema = require('../models/user.model');
+const cloudinary = require('cloudinary').v2;
+const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -46,7 +46,7 @@ const addProduct = async (req, res) => {
     if (Array.isArray(images) && images.length) {
       for (const image of images) {
         const response = await cloudinary.uploader.upload(image.path, {
-          folder: "products",
+          folder: 'products',
           use_filename: true,
           unique_filename: false,
         });
@@ -64,7 +64,7 @@ const addProduct = async (req, res) => {
     if (!Array.isArray(images) && images.name) {
       const { path } = images;
       const response = await cloudinary.uploader.upload(path, {
-        folder: "products",
+        folder: 'products',
         use_filename: true,
         unique_filename: false,
       });
@@ -80,7 +80,7 @@ const addProduct = async (req, res) => {
 
     return res.json({
       success: true,
-      message: "Product added successfully",
+      message: 'Product added successfully',
       data: {
         product,
       },
@@ -102,7 +102,7 @@ const getProductListController = async (req, res) => {
 
     return res.json({
       success: true,
-      message: "Product list found",
+      message: 'Product list found',
       data: {
         products,
       },
@@ -124,13 +124,13 @@ const getSingleProductController = async (req, res) => {
     if (!product) {
       return res.json({
         success: false,
-        message: "Product not found",
+        message: 'Product not found',
       });
     }
 
     return res.json({
       success: true,
-      message: "Product found",
+      message: 'Product found',
       data: {
         product,
       },
@@ -162,7 +162,7 @@ const updateProduct = async (req, res) => {
     if (!existingProduct)
       return res.status(404).json({
         success: false,
-        message: "Product not found",
+        message: 'Product not found',
       });
 
     const { name, company, description, variants, price, discount, stock } =
@@ -184,7 +184,7 @@ const updateProduct = async (req, res) => {
 
     return res.json({
       success: true,
-      message: "Product updated successfully",
+      message: 'Product updated successfully',
       data: {
         product: updatedProduct,
       },
