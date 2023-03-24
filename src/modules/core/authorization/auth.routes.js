@@ -23,7 +23,8 @@ router.put(
   '/auth/update-permissions/:userId',
   isAuthorized({
     allowedRole: ['manager'],
-  })
+  }),
+  updatePermissions
 );
 router.get('/auth/is-logged-in', isLoggedIn);
 router.get('/auth/logout', logout);
