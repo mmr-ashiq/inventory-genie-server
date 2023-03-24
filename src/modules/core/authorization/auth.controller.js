@@ -115,6 +115,7 @@ const login = async (req, res) => {
     const user = await userSchema.findOne({ email }).select('+password');
 
     if (!user) {
+      console.log('user not found');
       return res.status(400).json({
         success: false,
         message: 'Invalid credentials',
