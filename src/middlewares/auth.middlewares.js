@@ -1,40 +1,50 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-exports.isAuthorized = ({ allowedRole, allowedPermissions }) => {
+export const isAuthorized = ({ allowedRole = [], allowedPermissions = [] }) => {
   return (req, res, next) => {
     try {
-      const token = req.cookies.token;
+      let token;
 
-      if (!token) {
-        return res.status(401).json({
-          success: false,
-          message: 'Unauthorized',
-        });
+      const cookie = req.cookies?.token || null;
+      const bearerToken = req.headers.authorization?.split(' ')[1] || null;
+
+      console.log('cookie', cookie);
+      console.log('bearerToken', bearerToken);
+
+      if (cookie) {
+        token = cookie;
+      } else {
+        token = bearerToken;
       }
 
+      if (!token)
+        return res.status(401).json({
+          success: false,
+          message: 'UNAUTHORIZED',
+        });
+
+      //   verify token
       const decoder = jwt.verify(token, process.env.JWT_SECRET);
 
       const { role, permissions } = decoder;
-      console.log(permissions);
 
-      if (allowedRole?.length && !allowedRole.includes(role)) {
+      if (allowedRole?.length && !allowedRole.includes(role))
         return res.status(401).json({
           success: false,
-          message: 'Unauthorized',
+          message: 'UNAUTHORIZED',
         });
-      }
 
       if (
         allowedPermissions &&
+        allowedPermissions?.length &&
         !allowedPermissions.some((permission) =>
           permissions.includes(permission)
         )
-      ) {
+      )
         return res.status(401).json({
           success: false,
-          message: 'Unauthorized',
+          message: 'UNAUTHORIZED',
         });
-      }
 
       req.userData = {
         id: decoder.id,
@@ -44,10 +54,9 @@ exports.isAuthorized = ({ allowedRole, allowedPermissions }) => {
 
       next();
     } catch (error) {
-      console.log(error);
       return res.status(401).json({
         success: false,
-        message: 'Unauthorized',
+        message: error.message,
       });
     }
   };
