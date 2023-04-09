@@ -30,12 +30,7 @@ export const loginController = async (req, res) => {
     }
 
     const token = jwt.sign(
-      {
-        userId: user._id,
-        role: user.role,
-        permissions: user.permissions,
-        email: user.email,
-      },
+      { userId: user._id, role: user.role, permissions: user.permissions },
       config.jwtSecret
     );
 
@@ -91,6 +86,76 @@ export const registrationController = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+export const changePasswordController = async (req, res) => {
+  try {
+    const { previousPassword, newPassword, confirmPassword } = req.body;
+
+    if (!previousPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: 'Passwords do not match' });
+    }
+
+    const user = await userModel.findById(req.userData.userId).select('+password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isMatch = await compare(previousPassword, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    const hashedPassword = await hash(newPassword, 12);
+
+    await userModel.findByIdAndUpdate(req.userData.userId, { password: hashedPassword });
+
+    return res.status(200).json({ message: 'Password changed successfully' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+export const isLoggedInController = async (req, res) => {
+  try {
+    const cookie = req.cookies.token;
+
+    if (!cookie) {
+      return res.status(200).json({ message: 'User not logged in' });
+    }
+
+    const decoded = jwt.verify(cookie, config.jwtSecret);
+
+    const user = await userModel.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(200).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json({
+      message: 'login successful',
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+export const logoutController = async (req, res) => {
+  try {
+    res.clearCookie('token');
+    return res.status(200).json({ message: 'Logged out successfully' });
+  } catch (error) {
     return res.status(500).json({ message: 'Something went wrong' });
   }
 };

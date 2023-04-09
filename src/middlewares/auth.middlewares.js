@@ -8,9 +8,6 @@ export const isAuthorized = ({ allowedRole = [], allowedPermissions = [] }) => {
       const cookie = req.cookies?.token || null;
       const bearerToken = req.headers.authorization?.split(' ')[1] || null;
 
-      console.log('cookie', cookie);
-      console.log('bearerToken', bearerToken);
-
       if (cookie) {
         token = cookie;
       } else {
@@ -37,9 +34,7 @@ export const isAuthorized = ({ allowedRole = [], allowedPermissions = [] }) => {
       if (
         allowedPermissions &&
         allowedPermissions?.length &&
-        !allowedPermissions.some((permission) =>
-          permissions.includes(permission)
-        )
+        !allowedPermissions.some((permission) => permissions.includes(permission))
       )
         return res.status(401).json({
           success: false,
@@ -47,7 +42,7 @@ export const isAuthorized = ({ allowedRole = [], allowedPermissions = [] }) => {
         });
 
       req.userData = {
-        id: decoder.id,
+        userId: decoder.userId,
         role: decoder.role,
         permissions: decoder.permissions,
       };
