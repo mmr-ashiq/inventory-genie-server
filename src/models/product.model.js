@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
+    required: false,
   },
   price: {
     type: Number,
@@ -57,6 +57,10 @@ const vendorStockInSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
     paidPrice: {
       type: Number,
       required: true,
@@ -72,29 +76,37 @@ const vendorStockInSchema = new mongoose.Schema(
   }
 );
 
-export const VendorStockIn = mongoose.model('VendorStockIn', vendorStockInSchema);
+export const stockInModel = mongoose.model('StockIn', vendorStockInSchema);
 
 const productSoldSchema = new mongoose.Schema(
   {
-    customer: {
+    customerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Customer',
       required: true,
     },
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',
-      required: true,
-    },
-    quantity: {
+    products: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Product',
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+    totalPrice: {
       type: Number,
       required: true,
     },
-    paidAmount: {
+    paidPrice: {
       type: Number,
       required: true,
     },
-    dueAmount: {
+    duePrice: {
       type: Number,
       required: true,
       default: 0,
@@ -105,4 +117,4 @@ const productSoldSchema = new mongoose.Schema(
   }
 );
 
-export const ProductSold = mongoose.model('ProductSold', productSoldSchema);
+export const productSoldModel = mongoose.model('ProductSold', productSoldSchema);

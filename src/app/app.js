@@ -8,7 +8,6 @@ import { rootRouter } from '../routes/root.routes.js';
 
 const app = express();
 
-app.use(cors());
 app.use(
   cors({
     // origin: [config.clientOrigin],
