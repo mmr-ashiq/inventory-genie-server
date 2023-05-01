@@ -11,7 +11,7 @@ export const addNewProductController = async (req, res) => {
         message: isValidData.error.issues[0].message,
       });
 
-    const { name, price, category, company, description, discount, variants } = isValidData.data;
+    const { name, price, category, company, description, discount, variants, stock } = isValidData.data;
 
     await productModel.create({
       name,
@@ -21,9 +21,10 @@ export const addNewProductController = async (req, res) => {
       description,
       discount,
       variants,
+      stock,
     });
 
-    return res.status(201).json({ message: 'Product created successfully' });
+    return res.status(201).json({ message: 'Product add successfully' });
   } catch (error) {
     console.log(error);
     return res.status(500).json({

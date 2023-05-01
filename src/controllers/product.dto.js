@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const addNewProductSchema = z.object({
+export const addNewProductSchema = z.object({
   name: z.string({
     invalid_type_error: 'Name must be a string',
     required_error: 'Name is required',
@@ -11,8 +11,7 @@ const addNewProductSchema = z.object({
       required_error: 'Description is required',
     })
     .optional(),
-  price: z
-    .coerce
+  price: z.coerce
     .number({
       invalid_type_error: 'Price must be a number',
       required_error: 'Price is required',
@@ -34,8 +33,15 @@ const addNewProductSchema = z.object({
       })
     )
     .optional(),
-  discount: z
-    .coerce
+  stock: z
+    .number({
+      invalid_type_error: 'Stock must be a number',
+      required_error: 'Stock is required',
+    })
+    .min(1, 'Stock must be greater than 0')
+    .refine((value) => !(value % 1), 'Stock must be an integer')
+    .optional(),
+  discount: z.coerce
     .number({
       invalid_type_error: 'Discount must be a number',
       required_error: 'Discount is required',

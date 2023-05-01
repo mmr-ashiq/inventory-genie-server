@@ -48,9 +48,12 @@ const customerSchema = new mongoose.Schema({
 });
 
 const vendorSchema = new mongoose.Schema({
-  name: {
+  agentName: {
     type: String,
     required: true,
+  },
+  companyName: {
+    type: String,
   },
   email: {
     type: String,

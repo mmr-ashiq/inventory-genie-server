@@ -90,6 +90,7 @@ export const registrationController = async (req, res) => {
   }
 };
 
+
 export const changePasswordController = async (req, res) => {
   try {
     const { previousPassword, newPassword, confirmPassword } = req.body;
@@ -159,3 +160,17 @@ export const logoutController = async (req, res) => {
     return res.status(500).json({ message: 'Something went wrong' });
   }
 };
+
+export const getUserProfileController = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.userData.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json({ user });
+  } catch (error) {
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+}
