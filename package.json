@@ -8,6 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx nodemon server.js",
     "start": "node server.js",
+    "jsdoc" : "jsdoc -c jsdoc.json",
     "prod": "SET NODE_ENV=production && node app.js"
   },
   "repository": {
@@ -33,5 +34,8 @@
     "mongoose": "^6.9.1",
     "morgan": "^1.10.0",
     "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "jsdoc": "^4.0.2"
   }
 }

@@ -90,7 +90,12 @@ export const registrationController = async (req, res) => {
   }
 };
 
-
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns promise if successfull returns success message else error message
+ */
 export const changePasswordController = async (req, res) => {
   try {
     const { previousPassword, newPassword, confirmPassword } = req.body;
