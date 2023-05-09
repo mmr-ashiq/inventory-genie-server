@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { config } from '../app/config.js';
 
 export const isAuthorized = ({ allowedRole = [], allowedPermissions = [] }) => {
   return (req, res, next) => {
@@ -21,7 +22,7 @@ export const isAuthorized = ({ allowedRole = [], allowedPermissions = [] }) => {
         });
 
       //   verify token
-      const decoder = jwt.verify(token, process.env.JWT_SECRET);
+      const decoder = jwt.verify(token, config.jwtSecret);
 
       const { role, permissions } = decoder;
 

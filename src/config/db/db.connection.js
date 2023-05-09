@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
+import { config } from './config.js';
 
 const connectDB = async () => {
   try {
     mongoose.set('strictQuery', false);
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
+    const conn = await mongoose.connect(config.mongoUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

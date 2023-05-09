@@ -1,21 +1,19 @@
-import express from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
+import morgan from 'morgan';
 
-import { config } from './config.js';
 import { rootRouter } from '../routes/root.routes.js';
+import { config } from './config.js';
 
 const app = express();
 
 app.use(
   cors({
-    // origin: [config.clientOrigin],
-    origin: 'http://localhost:3000',
+    origin: [config.clientOrigin],
     credentials: true,
   })
 );
-
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cookieParser());
@@ -27,3 +25,4 @@ app.get('/', (req, res) => {
 });
 
 export { app };
+

@@ -1,9 +1,10 @@
 const ErrorHandler = require('../utils/errorHandler');
+import { config } from '../app/config.js';
 
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
 
-  if (process.env.NODE_ENV === 'development') {
+  if (config.environment === 'development') {
     res.status(err.statusCode).json({
       success: false,
       error: err,
@@ -12,7 +13,7 @@ module.exports = (err, req, res, next) => {
     });
   }
 
-  if (process.env.NODE_ENV === 'production') {
+  if (config.environment === 'production') {
     let error = { ...err };
 
     error.message = err.message;
