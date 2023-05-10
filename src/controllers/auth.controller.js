@@ -16,12 +16,9 @@ export const loginController = async (req, res) => {
 
     const user = await userModel.findOne({ email }).select('+password');
 
-    console.log(user);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
-    console.log(password, user.password);
 
     const isMatch = await compare(password, user.password);
 
@@ -38,7 +35,7 @@ export const loginController = async (req, res) => {
 
     return res
       .status(200)
-      .cookie('token', token, cookieOptions)
+      .cookie('token', token, cookieOptions())
       .json({ user: userWithoutPassword });
   } catch (error) {
     console.log(error);

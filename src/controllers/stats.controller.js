@@ -1,4 +1,5 @@
 import { productModel, productSoldModel } from '../models/product.model.js';
+import { customerModel, vendorModel } from '../models/user.model.js';
 
 export const getTopSixProductsController = async (req, res) => {
   try {
@@ -147,6 +148,203 @@ export const yearlySellReportController = async (req, res) => {
       message: 'Yearly sell report fetched successfully',
       data: {
         report: formattedData,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+export const getTopCustomerController = async (req, res) => {
+  try {
+    const allSoldProducts = await productSoldModel.find({
+      // createdAt: {
+      //   $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      //   $lt: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1),
+      // },
+    });
+
+    const allProducts = allSoldProducts.map((soldProduct) => {
+      return soldProduct.products.map((product) => {
+        return {
+          productId: product.productId,
+          quantity: product.quantity,
+          customerId: soldProduct.customerId,
+        };
+      });
+    });
+
+    // flatten array
+    const flattenProducts = allProducts.flat();
+
+    const mergedProducts = flattenProducts.reduce((acc, product) => {
+      const existingProduct = acc.find(
+        (p) => p.productId.toString() === product.productId.toString()
+      );
+
+      if (existingProduct) {
+        existingProduct.quantity += product.quantity;
+      } else {
+        acc.push(product);
+      }
+
+      return acc;
+    }, []);
+
+    const sortedProducts = mergedProducts.sort((a, b) => b.quantity - a.quantity).slice(0, 6);
+
+    // find customer details from sortedProducts
+    const customers = await customerModel.find({
+      _id: {
+        $in: sortedProducts.map((product) => product.customerId),
+      },
+    });
+
+    const formattedData = sortedProducts.map((product) => {
+      const existingCustomer = customers.find(
+        (c) => c._id.toString() === product.customerId.toString()
+      );
+
+      // count total bought products by customer
+      // const totalBoughtProducts = flattenProducts.reduce((acc, product) => {
+      //   if (product.customerId.toString() === existingCustomer._id.toString()) {
+      //     acc += product.quantity;
+      //   }
+
+      //   return acc;
+      // }, 0);
+
+      return {
+        customerId: product.customerId,
+        quantity: product.quantity,
+        firstName: existingCustomer.firstName,
+        lastName: existingCustomer.lastName,
+        email: existingCustomer.email,
+        phone: existingCustomer.phone,
+      };
+    });
+
+    const customerMerge = formattedData.reduce((acc, customer) => {
+      const existingCustomer = acc.find(
+        (c) => c.customerId.toString() === customer.customerId.toString()
+      );
+
+      if (existingCustomer) {
+        existingCustomer.quantity += customer.quantity;
+      } else {
+        acc.push(customer);
+      }
+
+      return acc;
+    }, []);
+
+    return res.status(200).json({
+      message: 'Top six products fetched successfully',
+      data: {
+        customers: customerMerge,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+export const getMostDueCustomerController = async (req, res) => {
+  try {
+    // get top tem customers who have the most due amount
+    const allCustomers = await productSoldModel.aggregate([
+      {
+        $group: {
+          _id: '$customerId',
+          totalDue: { $sum: '$duePrice' },
+        },
+      },
+      {
+        $sort: {
+          totalDue: -1,
+        },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    const customers = await customerModel.find({
+      _id: {
+        $in: allCustomers.map((customer) => customer._id),
+      },
+    });
+
+    const formattedData = allCustomers.map((customer) => {
+      const existingCustomer = customers.find((c) => c._id.toString() === customer._id.toString());
+
+      return {
+        customerId: customer._id,
+        totalDue: customer.totalDue,
+        firstName: existingCustomer.firstName,
+        lastName: existingCustomer.lastName,
+        email: existingCustomer.email,
+        phone: existingCustomer.phone,
+      };
+    });
+
+    return res.status(200).json({
+      message: 'Top ten customers fetched successfully',
+      data: {
+        customers: formattedData,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+export const getTopVendorsController = async (req, res) => {
+  try {
+    // get top ten vendors who have the most quantity of products
+    const stockIns = await stockInModel.aggregate([
+      {
+        $group: {
+          _id: '$vendor',
+          totalQuantity: { $sum: '$quantity' },
+        },
+      },
+      {
+        $sort: {
+          totalQuantity: -1,
+        },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    console.log(stockIns);
+    const vendors = await vendorModel.find({
+      _id: {
+        $in: stockIns.map((stockIn) => stockIn._id),
+      },
+    });
+
+    const formattedData = stockIns.map((stockIn) => {
+      const existingVendor = vendors.find((v) => v._id.toString() === stockIn._id.toString());
+
+      return {
+        vendorId: stockIn._id,
+        totalQuantity: stockIn.totalQuantity,
+        firstName: existingVendor.firstName,
+        lastName: existingVendor.lastName,
+        email: existingVendor.email,
+        phone: existingVendor.phone,
+      };
+    });
+
+    return res.status(200).json({
+      message: 'Top ten vendors fetched successfully',
+      data: {
+        vendors: formattedData,
       },
     });
   } catch (error) {
