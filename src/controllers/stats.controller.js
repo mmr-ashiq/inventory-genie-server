@@ -1,6 +1,12 @@
 import { productModel, productSoldModel } from '../models/product.model.js';
 import { customerModel, vendorModel } from '../models/user.model.js';
 
+/**
+ * Get top six products by total sell in a month
+ * @param {*} req request object
+ * @param {*} res response object
+ * @returns response object with top six products data and message
+ */
 export const getTopSixProductsController = async (req, res) => {
   try {
     const month = Number(req.query.month) || new Date().getMonth() + 1;
@@ -70,6 +76,12 @@ export const getTopSixProductsController = async (req, res) => {
   }
 };
 
+/**
+ * Get yearly sell report by month
+ * @param {*} req request object
+ * @param {*} res response object
+ * @returns response object with yearly sell report data and message
+ */
 export const yearlySellReportController = async (req, res) => {
   try {
     const year = Number(req.query.year) || new Date().getFullYear();
@@ -156,6 +168,12 @@ export const yearlySellReportController = async (req, res) => {
   }
 };
 
+/**
+ * Get top six customers by total purchase
+ * @param {*} req request object
+ * @param {*} res response object
+ * @returns response object with top six customers data and message 
+ */
 export const getTopCustomerController = async (req, res) => {
   try {
     const allSoldProducts = await productSoldModel.find({
@@ -251,6 +269,12 @@ export const getTopCustomerController = async (req, res) => {
   }
 };
 
+/**
+ * get top ten customers who have the most due amount
+ * @param {*} req request object
+ * @param {*} res response object
+ * @returns {object} response object with message and data property containing customers array
+ */
 export const getMostDueCustomerController = async (req, res) => {
   try {
     // get top tem customers who have the most due amount
@@ -301,6 +325,12 @@ export const getMostDueCustomerController = async (req, res) => {
   }
 };
 
+/**
+ * get top ten vendors who have the most quantity of products
+ * @param {*} req request object
+ * @param {*} res response object
+ * @returns {object} response object with data and message property containing top ten vendors 
+ */
 export const getTopVendorsController = async (req, res) => {
   try {
     // get top ten vendors who have the most quantity of products
@@ -345,6 +375,129 @@ export const getTopVendorsController = async (req, res) => {
       message: 'Top ten vendors fetched successfully',
       data: {
         vendors: formattedData,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+/**
+ * Get top ten vendors who have the most due amount from customers
+ * @param {*} req request object
+ * @param {*} res response object
+ * @returns top ten vendors who have the most due amount from customers
+ */
+export const getTopVendorsWithDueController = async (req, res) => {
+  try {
+    const stockIns = await stockInModel.aggregate([
+      {
+        $group: {
+          _id: '$vendor',
+          totalDue: { $sum: '$dueAmount' },
+        },
+      },
+      {
+        $sort: {
+          totalDue: -1,
+        },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    const vendors = await vendorModel.find({
+      _id: {
+        $in: stockIns.map((stockIn) => stockIn._id),
+      },
+    });
+
+    const formattedData = stockIns.map((stockIn) => {
+      const existingVendor = vendors.find((v) => v._id.toString() === stockIn._id.toString());
+
+      return {
+        vendorId: stockIn._id,
+        totalDue: stockIn.totalDue,
+        firstName: existingVendor.firstName,
+        lastName: existingVendor.lastName,
+        email: existingVendor.email,
+        phone: existingVendor.phone,
+      };
+    });
+
+    return res.status(200).json({
+      message: 'Top ten vendors fetched successfully',
+      data: {
+        vendors: formattedData,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+/**
+ * get total sales amount of the shop in last 30 days from today
+ * @param {*} req request object
+ * @param {*} res response object
+ * @returns  total sales amount of the shop
+ * @match this is to match the date from the database
+ * @group this is to sum the total price of the products
+ */
+export const getTotalSalesAmountController = async (req, res) => {
+  try {
+    const totalSales = await productSoldModel.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(new Date().setDate(new Date().getDate() - 30)),
+          },
+        },
+      },
+
+      {
+        $group: {
+          _id: null,
+          totalSales: { $sum: '$totalPrice' },
+        },
+      },
+    ]);
+    return res.status(200).json({
+      message: 'Total sales amount fetched successfully',
+      data: {
+        totalSales: totalSales[0].totalSales,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+/**
+ * get total due amount of the shop in last 30 days from today
+ * @param {*} req request object  
+ * @param {*} res response object
+ * @returns total due amount of the shop
+ */
+export const getTotalDueAmountController = async (req, res) => {
+  try {
+    const totalDue = await stockInModel.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalDue: { $sum: '$dueAmount' },
+        },
+      },
+    ]);
+
+    return res.status(200).json({
+      message: 'Total due amount fetched successfully',
+      data: {
+        totalDue: totalDue[0].totalDue,
       },
     });
   } catch (error) {
