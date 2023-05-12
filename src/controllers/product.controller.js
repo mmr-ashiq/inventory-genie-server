@@ -11,18 +11,58 @@ export const addNewProductController = async (req, res) => {
         message: isValidData.error.issues[0].message,
       });
 
-    const { name, price, category, company, description, discount, variants, stock } = isValidData.data;
+    const { name, price, category, company, description, discount, variants, stock } =
+      isValidData.data;
 
-    await productModel.create({
+    let product = await productModel.create({
       name,
       price,
-      category,
+      category: category ? JSON.parse(category) : [],
       company,
       description,
       discount,
-      variants,
+      variants: variants ? JSON.parse(variants) : [],
       stock,
     });
+
+    if (Array.isArray(images) && images.length) {
+      for (const image of images) {
+        const response = await cloudinary.uploader.upload(image.path, {
+          folder: 'products',
+          use_filename: true,
+          unique_filename: false,
+        });
+
+        console.log(response);
+
+        // update product with image url
+        product = await productModel.findByIdAndUpdate(
+          { _id: product._id },
+          {
+            $push: { images: response.secure_url },
+          },
+          { new: true }
+        );
+      }
+    }
+
+    if (!Array.isArray(images) && images?.name) {
+      const { path } = images;
+      const response = await cloudinary.uploader.upload(path, {
+        folder: 'products',
+        use_filename: true,
+        unique_filename: false,
+      });
+
+      // update product with image url
+      product = await productModel.findByIdAndUpdate(
+        { _id: product._id },
+        {
+          $push: { images: response.secure_url },
+        },
+        { new: true }
+      );
+    }
 
     return res.status(201).json({ message: 'Product add successfully' });
   } catch (error) {
@@ -77,7 +117,7 @@ export const getProductsController = async (req, res) => {
     const options = {
       page: parseInt(page, 10) || 1,
       limit: parseInt(limit, 10) || 30,
-      sort: { createdAt: -1 },
+      sort: { createdAt: 1 },
     };
 
     const result = await productModel.aggregate([
