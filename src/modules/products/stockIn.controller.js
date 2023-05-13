@@ -1,5 +1,5 @@
-import { productModel, stockInModel } from '../models/product.model.js';
-import { vendorModel } from '../models/user.model.js';
+import { productModel, stockInModel } from './product.model.js';
+import { vendorModel } from '../platform-users/user.model.js';
 import { productStockInSchema } from './product.dto.js';
 
 export const addNewStockInController = async (req, res) => {

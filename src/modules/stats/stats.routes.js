@@ -1,16 +1,15 @@
 import { Router } from 'express';
 
-import { isAuthorized } from '../middlewares/auth.middlewares.js';
 import {
-  getTopSixProductsController,
-  yearlySellReportController,
-  getTopCustomerController,
   getMostDueCustomerController,
+  getTopCustomerController,
+  getTopSixProductsController,
   getTopVendorsController,
   getTopVendorsWithDueController,
-  getTotalSalesAmountController,
   getTotalDueAmountController,
-} from '../controllers/stats.controller.js';
+  getTotalSalesAmountController,
+  yearlySellReportController,
+} from './stats.controller.js';
 
 const router = Router();
 

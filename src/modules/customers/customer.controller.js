@@ -1,4 +1,4 @@
-import { customerModel } from '../models/user.model.js';
+import { customerModel } from '../platform-users/user.model.js';
 import { addNewCustomerSchema, updateCustomerSchema } from './customer.dto.js';
 
 export const addNewCustomerController = async (req, res) => {

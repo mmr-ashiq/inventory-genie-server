@@ -1,17 +1,17 @@
 import { Router } from 'express';
 
-import { isAuthorized } from '../middlewares/auth.middlewares.js';
+import { isAuthorized } from '../core/authorization/auth.middlewares.js';
 import {
   addNewProductController,
   getProductsController,
   updateProductController,
-} from '../controllers/product.controller.js';
+} from './product.controller.js';
 import {
   getSellsListController,
   productSellController,
   updateSellController,
-} from '../controllers/productSell.controller.js';
-import { addNewStockInController } from '../controllers/stockIn.controller.js';
+} from './productSell.controller.js';
+import { addNewStockInController } from './stockIn.controller.js';
 
 const router = Router();
 

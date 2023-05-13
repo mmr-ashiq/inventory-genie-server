@@ -1,7 +1,8 @@
-import { app } from './src/app/app.js';
 import mongoose from 'mongoose';
-import { config } from './src/app/config.js';
-import { seedAdmin } from './src/seeds/admin.seed.js';
+
+import { app } from './src/config/lib/app.js';
+import { config } from './src/config/lib/config.js';
+import { seedAdmin } from './src/modules/platform-users/admin.seed.js';
 
 mongoose.set('strictQuery', false);
 

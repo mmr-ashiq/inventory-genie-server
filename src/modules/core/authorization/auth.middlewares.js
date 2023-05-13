@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { config } from '../app/config.js';
+import { config } from '../../../config/lib/config.js';
 
 export const isAuthorized = ({ allowedRole = [], allowedPermissions = [] }) => {
   return (req, res, next) => {

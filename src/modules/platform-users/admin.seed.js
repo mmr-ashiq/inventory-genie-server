@@ -1,6 +1,6 @@
 import { hash } from 'bcrypt';
-import { config } from '../../src/app/config.js';
-import { userModel } from '../models/user.model.js';
+import { config } from '../../config/lib/config.js';
+import { userModel } from '../platform-users/user.model.js';
 
 export const seedAdmin = async () => {
   const adminData = {

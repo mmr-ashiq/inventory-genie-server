@@ -33,14 +33,6 @@ export const addNewProductSchema = z.object({
       })
     )
     .optional(),
-  stock: z
-    .number({
-      invalid_type_error: 'Stock must be a number',
-      required_error: 'Stock is required',
-    })
-    .min(1, 'Stock must be greater than 0')
-    .refine((value) => !(value % 1), 'Stock must be an integer')
-    .optional(),
   discount: z.coerce
     .number({
       invalid_type_error: 'Discount must be a number',

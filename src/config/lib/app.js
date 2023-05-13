@@ -3,7 +3,7 @@ import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
 
-import { rootRouter } from '../routes/root.routes.js';
+import { rootRouter } from '../../modules/platform-users/root.routes.js';
 import { config } from './config.js';
 
 const app = express();

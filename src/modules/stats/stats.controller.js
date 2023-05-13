@@ -1,5 +1,5 @@
-import { productModel, productSoldModel } from '../models/product.model.js';
-import { customerModel, vendorModel } from '../models/user.model.js';
+import { customerModel, vendorModel } from '../platform-users/user.model.js';
+import { productModel, productSoldModel } from '../products/product.model.js';
 
 /**
  * Get top six products by total sell in a month
@@ -444,8 +444,6 @@ export const getTopVendorsWithDueController = async (req, res) => {
  * @param {*} req request object
  * @param {*} res response object
  * @returns  total sales amount of the shop
- * @match this is to match the date from the database
- * @group this is to sum the total price of the products
  */
 export const getTotalSalesAmountController = async (req, res) => {
   try {

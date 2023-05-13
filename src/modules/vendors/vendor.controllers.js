@@ -1,4 +1,4 @@
-import { vendorModel } from '../models/user.model.js';
+import { vendorModel } from '../platform-users/user.model.js';
 import { addNewVendorSchema, updateVendorSchema } from './vendor.dto.js';
 
 export const addNewVendorController = async (req, res) => {

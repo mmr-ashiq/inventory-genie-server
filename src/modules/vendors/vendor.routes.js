@@ -1,11 +1,11 @@
 import { Router } from 'express';
 
-import { isAuthorized } from '../middlewares/auth.middlewares.js';
+import { isAuthorized } from '../core/authorization/auth.middlewares.js';
 import {
   getVendorsController,
   addNewVendorController,
   updateVendorController,
-} from '../controllers/vendor.controllers.js';
+} from './vendor.controllers.js';
 
 const router = Router();
 

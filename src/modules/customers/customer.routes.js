@@ -1,13 +1,13 @@
 import { Router } from 'express';
 
-import { isAuthorized } from '../middlewares/auth.middlewares.js';
+import { isAuthorized } from '../core/authorization/auth.middlewares.js';
 
 import {
   getCustomersController,
   addNewCustomerController,
   updateCustomerController,
   deleteCustomerController,
-} from '../controllers/customer.controller.js';
+} from './customer.controller.js';
 
 const router = Router();
 

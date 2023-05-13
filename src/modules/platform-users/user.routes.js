@@ -6,8 +6,8 @@ import {
   registrationController,
   logoutController,
   getUserProfileController,
-} from '../controllers/auth.controller.js';
-import { isAuthorized } from '../middlewares/auth.middlewares.js';
+} from '../core/authorization/auth.controller.js';
+import { isAuthorized } from '../core/authorization/auth.middlewares.js';
 
 const router = Router();
 

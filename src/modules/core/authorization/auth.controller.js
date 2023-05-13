@@ -1,10 +1,10 @@
 import { compare, hash } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import { config } from '../app/config.js';
-import { RegistrationSchema } from '../controllers/auth.dto.js';
-import { userModel } from '../models/user.model.js';
+import { config } from '../../../config/lib/config.js';
 import { cookieOptions } from '../utils/cookie.js';
+import { userModel } from '../../platform-users/user.model.js';
+import { RegistrationSchema } from './auth.dto.js';
 
 export const loginController = async (req, res) => {
   try {
@@ -157,7 +157,8 @@ export const isLoggedInController = async (req, res) => {
 export const logoutController = async (req, res) => {
   try {
     res.clearCookie('token');
-    return res.status(200).json({ message: 'Logged out successfully' });
+
+    return res.status(200).json({ message: 'User logged out successfully' });
   } catch (error) {
     return res.status(500).json({ message: 'Something went wrong' });
   }

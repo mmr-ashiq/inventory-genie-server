@@ -1,5 +1,8 @@
+import { v2 as cloudinary } from 'cloudinary';
+
+import { config } from '../../config/lib/config.js';
+import { productModel } from './product.model.js';
 import { addNewProductSchema, updateProductSchema } from './product.dto.js';
-import { productModel } from '../models/product.model.js';
 
 export const addNewProductController = async (req, res) => {
   try {
@@ -11,7 +14,7 @@ export const addNewProductController = async (req, res) => {
         message: isValidData.error.issues[0].message,
       });
 
-    const { name, price, category, company, description, discount, variants, stock } =
+    const { name, price, category, company, description, discount, variants } =
       isValidData.data;
 
     let product = await productModel.create({
@@ -22,7 +25,6 @@ export const addNewProductController = async (req, res) => {
       description,
       discount,
       variants: variants ? JSON.parse(variants) : [],
-      stock,
     });
 
     if (Array.isArray(images) && images.length) {

@@ -1,6 +1,6 @@
 import { productSellSchema } from './product.dto.js';
-import { customerModel } from '../models/user.model.js';
-import { productModel, productSoldModel  } from '../models/product.model.js';
+import { customerModel } from '../platform-users/user.model.js';
+import { productModel, productSoldModel  } from './product.model.js';
 
 export const productSellController = async (req, res) => {
   try {
