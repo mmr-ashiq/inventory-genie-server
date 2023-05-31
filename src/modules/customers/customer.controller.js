@@ -10,7 +10,7 @@ export const addNewCustomerController = async (req, res) => {
         message: isValidData.error.issues[0].message,
       });
 
-    const { firstName, lastName, email, phone } = isValidData.data;
+    const { name, email, phone, address } = isValidData.data;
 
     const existingCustomer = await customerModel.findOne({ phone });
 
@@ -19,10 +19,10 @@ export const addNewCustomerController = async (req, res) => {
     }
 
     await customerModel.create({
-      firstName,
-      lastName,
+      name,
       email,
       phone,
+      address,
     });
 
     return res.status(201).json({ message: 'Customer created successfully' });
@@ -49,13 +49,13 @@ export const updateCustomerController = async (req, res) => {
       return res.status(404).json({ message: 'Customer not found' });
     }
 
-    const { firstName, lastName, email, phone } = isValidData.data;
+    const { name, email, phone, address } = isValidData.data;
 
     await customerModel.findByIdAndUpdate(customerId, {
-      firstName,
-      lastName,
+      name,
       email,
       phone,
+      address,
     });
 
     return res.status(200).json({ message: 'Customer updated successfully' });
@@ -105,6 +105,28 @@ export const getCustomersController = async (req, res) => {
       data: {
         customers: customers,
         totalCount: totalCount,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+export const getSingleCustomerController = async (req, res) => {
+  try {
+    const { customerId } = req.params;
+
+    const customer = await customerModel.findOne({ _id: customerId });
+
+    if (!customer) {
+      return res.status(404).json({ message: 'customer not found' });
+    }
+
+    return res.status(200).json({
+      message: 'customer fetched successfully',
+      data: {
+        customer,
       },
     });
   } catch (error) {

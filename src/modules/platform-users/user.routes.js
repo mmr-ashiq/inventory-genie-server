@@ -1,13 +1,14 @@
 import { Router } from 'express';
 
 import {
+  getUserProfileController,
   isLoggedInController,
   loginController,
-  registrationController,
   logoutController,
-  getUserProfileController,
+  registrationController,
 } from '../core/authorization/auth.controller.js';
 import { isAuthorized } from '../core/authorization/auth.middlewares.js';
+import { getUserListController } from './user.controller.js';
 
 const router = Router();
 
@@ -15,7 +16,7 @@ router.post('/auth/login', loginController);
 router.post(
   '/auth/registration',
   isAuthorized({
-    allowedRole: ['admin'],
+    allowedRole: ['manager'],
     allowedPermissions: [],
   }),
   registrationController
@@ -32,5 +33,14 @@ router.get(
   }),
   getUserProfileController
 );
+router.get(
+  '/users',
+  isAuthorized({
+    allowedRole: ['manager'],
+    allowedPermissions: [],
+  }),
+  getUserListController
+);
 
 export { router as userRouter };
+

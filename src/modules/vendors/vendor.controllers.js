@@ -129,3 +129,23 @@ export const getVendorsController = async (req, res) => {
     return res.status(500).json({ message: 'Something went wrong' });
   }
 };
+
+export const getSingleVendorController = async (req, res) => {
+  try {
+    const { vendorId } = req.params;
+
+    const vendor = await vendorModel.findById(vendorId);
+
+    if (!vendor) {
+      return res.status(404).json({ message: 'Vendor not found' });
+    }
+
+    return res.status(200).json({
+      message: 'Vendor fetched successfully',
+      data: vendor,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+}

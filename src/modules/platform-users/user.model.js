@@ -31,12 +31,9 @@ const userSchema = new mongoose.Schema(
 );
 
 const customerSchema = new mongoose.Schema({
-  firstName: {
+  name: {
     type: String,
     required: true,
-  },
-  lastName: {
-    type: String,
   },
   email: {
     type: String,
@@ -45,6 +42,9 @@ const customerSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  address: {
+    type: String,
+  }
 });
 
 const vendorSchema = new mongoose.Schema({

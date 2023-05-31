@@ -7,7 +7,7 @@ export const seedAdmin = async () => {
     name: 'Admin',
     email: config.adminEmail,
     password: config.adminPassword,
-    role: 'admin',
+    role: 'manager',
   };
 
   try {

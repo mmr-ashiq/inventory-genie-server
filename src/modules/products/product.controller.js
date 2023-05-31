@@ -14,8 +14,7 @@ export const addNewProductController = async (req, res) => {
         message: isValidData.error.issues[0].message,
       });
 
-    const { name, price, category, company, description, discount, variants } =
-      isValidData.data;
+    const { name, price, category, company, description, discount, variants } = isValidData.data;
 
     let product = await productModel.create({
       name,
@@ -153,6 +152,28 @@ export const getProductsController = async (req, res) => {
       data: {
         products,
         totalCount,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+export const getSingleProductController = async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    const product = await productModel.findOne({ _id: productId });
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    return res.status(200).json({
+      message: 'Product fetched successfully',
+      data: {
+        product,
       },
     });
   } catch (error) {

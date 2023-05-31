@@ -5,6 +5,7 @@ import {
   addNewProductController,
   getProductsController,
   updateProductController,
+  getSingleProductController,
 } from './product.controller.js';
 import {
   getSellsListController,
@@ -38,6 +39,14 @@ router.get(
     allowedPermissions: [],
   }),
   getProductsController
+);
+router.get(
+  '/products/:productId/single',
+  isAuthorized({
+    allowedRole: ['admin', 'manager'],
+    allowedPermissions: [],
+  }),
+  getSingleProductController
 );
 
 router.post(

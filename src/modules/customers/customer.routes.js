@@ -6,6 +6,7 @@ import {
   getCustomersController,
   addNewCustomerController,
   updateCustomerController,
+  getSingleCustomerController,
   deleteCustomerController,
 } from './customer.controller.js';
 
@@ -34,6 +35,14 @@ router.get(
     allowedPermissions: [],
   }),
   getCustomersController
+);
+router.get(
+  '/customers/:customerId/single',
+  isAuthorized({
+    allowedRole: ['admin'],
+    allowedPermissions: [],
+  }),
+  getSingleCustomerController
 );
 router.delete(
   '/customers/:customerId',

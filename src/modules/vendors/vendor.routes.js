@@ -5,6 +5,7 @@ import {
   getVendorsController,
   addNewVendorController,
   updateVendorController,
+  getSingleVendorController,
 } from './vendor.controllers.js';
 
 const router = Router();
@@ -32,6 +33,14 @@ router.get(
     allowedPermissions: [],
   }),
   getVendorsController
+);
+router.get(
+  '/vendors/:vendorId/single',
+  isAuthorized({
+    allowedRole: ['admin'],
+    allowedPermissions: [],
+  }),
+  getSingleVendorController
 );
 
 export { router as vendorRouter };
