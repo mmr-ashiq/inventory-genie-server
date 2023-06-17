@@ -19,12 +19,12 @@ export const addNewProductSchema = z.object({
     .min(1, 'Price must be greater than 0')
     .refine((value) => !(value % 1), 'Price must be an integer')
     .optional(),
-  category: z
-    .string({
-      invalid_type_error: 'Category must be a string',
+  category: z.array(
+    z.string({
+      invalid_type_error: 'Category must be a string or an array of strings',
       required_error: 'Category is required',
     })
-    .optional(),
+  ),
   variants: z
     .array(
       z.string({
