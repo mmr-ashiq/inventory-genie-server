@@ -45,6 +45,23 @@ export const addNewProductSchema = z.object({
       required_error: 'Company is required',
     })
     .optional(),
+  stock: z
+    .number({
+      invalid_type_error: 'Stock must be a number',
+      required_error: 'Stock is required',
+    })
+    .min(0, 'Stock cannot be negative')
+    .optional(),
+  // images: z
+  //   .array(
+  //     z.object({
+  //       path: z.string({
+  //         invalid_type_error: 'Path must be a string',
+  //         required_error: 'Path is required',
+  //       }),
+  //     })
+  //   )
+  //   .optional(),
 });
 
 export const updateProductSchema = addNewProductSchema;

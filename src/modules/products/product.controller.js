@@ -1,11 +1,29 @@
-import { v2 as cloudinary } from 'cloudinary';
+import cloudinary from 'cloudinary';
+import dotenv from 'dotenv';
 
+import { userModel } from '../platform-users/user.model.js';
 import { addNewProductSchema, updateProductSchema } from './product.dto.js';
 import { productModel } from './product.model.js';
 
+dotenv.config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET_KEY,
+  secure: true,
+});
+
 export const addNewProductController = async (req, res) => {
   try {
+    const { id } = req.userData;
+    const { fields, files } = req;
+    const { images = undefined } = files || {};
+
     const isValidData = await addNewProductSchema.safeParseAsync(req.body);
+
+    // find user data with id
+    const user = await userModel.findById(id);
 
     if (!isValidData.success)
       return res.status(400).json({
@@ -14,18 +32,27 @@ export const addNewProductController = async (req, res) => {
       });
 
     const { name, price, category, company, description, discount, variants } = isValidData.data;
+    let { stock } = isValidData.data;
 
-    let images = []; // Initialize images as an empty array
+    // let images = []; // Initialize images as an empty array
+
+    // Convert stock to a number if it is provided
+    if (stock) {
+      stock = +stock;
+    }
 
     let product = await productModel.create({
       name,
-      price,
+      price: +price,
+      description,
       category: Array.isArray(category) ? category : JSON.parse(category),
       company,
       description,
-      discount,
+      discount: discount ? +discount : 0,
       variants: Array.isArray(variants) ? variants : JSON.parse(variants),
       images,
+      stock,
+      shopId: id,
     });
 
     if (Array.isArray(images) && images.length) {
@@ -57,6 +84,8 @@ export const addNewProductController = async (req, res) => {
         unique_filename: false,
       });
 
+      console.log(response);
+
       // update product with image url
       product = await productModel.findByIdAndUpdate(
         { _id: product._id },
@@ -67,11 +96,16 @@ export const addNewProductController = async (req, res) => {
       );
     }
 
-    return res.status(201).json({ message: 'Product add successfully' });
+    return res.status(201).json({
+      success: true,
+      message: 'Product add successfully',
+      data: { product },
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-      message: 'Something went wrong',
+      success: false,
+      message: error.message || 'Something went wrong',
     });
   }
 };
@@ -120,7 +154,7 @@ export const getProductsController = async (req, res) => {
     const options = {
       page: parseInt(page, 10) || 1,
       limit: parseInt(limit, 10) || 30,
-      sort: { createdAt: 1 },
+      sort: { createdAt: -1 }, // Sort by createdAt field in descending order (recently added first)
     };
 
     const result = await productModel.aggregate([
@@ -161,6 +195,7 @@ export const getProductsController = async (req, res) => {
     return res.status(500).json({ message: 'Something went wrong' });
   }
 };
+
 
 export const getSingleProductController = async (req, res) => {
   try {

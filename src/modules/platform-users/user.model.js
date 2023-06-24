@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
       type: Array,
       required: true,
     },
+    addedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,
@@ -68,4 +72,5 @@ const userModel = mongoose.model('User', userSchema);
 const customerModel = mongoose.model('Customer', customerSchema);
 const vendorModel = mongoose.model('Vendor', vendorSchema);
 
-export { userModel, customerModel, vendorModel };
+export { customerModel, userModel, vendorModel };
+
