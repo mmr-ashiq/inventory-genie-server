@@ -8,9 +8,9 @@ import {
 } from '../core/authorization/auth.controller.js';
 import { isAuthorized } from '../core/authorization/auth.middlewares.js';
 import {
-  getUserListController,
-  EditUserController,
   DeleteUserController,
+  EditUserController,
+  getUserListController,
   getUserProfileController,
   passwordChangeController,
 } from './user.controller.js';
@@ -21,7 +21,7 @@ router.post('/auth/login', loginController);
 router.post(
   '/auth/registration',
   isAuthorized({
-    allowedRole: ['manager'],
+    allowedRole: ['manager', 'admin'],
     allowedPermissions: [],
   }),
   registrationController
@@ -41,7 +41,7 @@ router.get(
 router.get(
   '/users',
   isAuthorized({
-    allowedRole: ['manager'],
+    allowedRole: ['manager', 'admin'],
     allowedPermissions: [],
   }),
   getUserListController
@@ -49,7 +49,7 @@ router.get(
 router.put(
   '/user/:id',
   isAuthorized({
-    allowedRole: ['manager'],
+    allowedRole: ['manager', 'admin'],
     allowedPermissions: [],
   }),
   EditUserController
@@ -57,7 +57,7 @@ router.put(
 router.delete(
   '/user/:id',
   isAuthorized({
-    allowedRole: ['manager'],
+    allowedRole: ['manager', 'admin'],
     allowedPermissions: [],
   }),
   DeleteUserController
@@ -72,3 +72,4 @@ router.put(
 );
 
 export { router as userRouter };
+

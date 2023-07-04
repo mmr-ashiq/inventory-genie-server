@@ -54,11 +54,10 @@ export const updateVendorController = async (req, res) => {
       return res.status(404).json({ message: 'Vendor not found' });
     }
 
-    const { firstName, lastName, companyName, email, phone } = isValidData.data;
+    const { agentName, companyName, email, phone } = vendorisValidData.data;
 
     await vendorModel.findByIdAndUpdate(vendorId, {
-      firstName,
-      lastName,
+      agentName,
       companyName,
       email,
       phone,
@@ -97,12 +96,11 @@ export const getVendorsController = async (req, res) => {
             {
               $project: {
                 _id: 1,
-                firstName: 1,
-                lastName: 1,
+                agentName: 1,
                 companyName: 1,
                 email: 1,
                 phone: 1,
-              },
+              },              
             },
           ],
           totalCount: [
