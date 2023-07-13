@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import { isAuthorized } from '../core/authorization/auth.middlewares.js';
+import { multipleFileUpload } from '../core/middlewares/fileUpload.middlewares.js';
 import {
   addNewProductController,
   getProductsController,
@@ -22,6 +23,7 @@ router.post(
     allowedRole: ['admin'],
     allowedPermissions: [],
   }),
+  multipleFileUpload(),
   addNewProductController
 );
 router.put(

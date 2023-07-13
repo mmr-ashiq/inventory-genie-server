@@ -1,6 +1,6 @@
-const formidable = require('express-formidable');
+import formidable from 'express-formidable';
 
-const singleFileUpload = (fileSizeLimit = 10) => {
+export const singleFileUpload = (fileSizeLimit = 10) => {
   const limit = fileSizeLimit * 1024 * 1024;
 
   return formidable({
@@ -10,7 +10,7 @@ const singleFileUpload = (fileSizeLimit = 10) => {
   });
 };
 
-const multipleFileUpload = (fileSizeLimit = 10) => {
+export const multipleFileUpload = (fileSizeLimit = 10) => {
   const limit = fileSizeLimit * 1024 * 1024;
 
   return formidable({
@@ -18,9 +18,4 @@ const multipleFileUpload = (fileSizeLimit = 10) => {
     keepExtensions: true,
     maxFileSize: limit,
   });
-};
-
-module.exports = {
-  singleFileUpload,
-  multipleFileUpload,
 };

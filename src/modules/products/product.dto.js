@@ -19,19 +19,16 @@ export const addNewProductSchema = z.object({
     .min(1, 'Price must be greater than 0')
     .refine((value) => !(value % 1), 'Price must be an integer')
     .optional(),
-  category: z.array(
-    z.string({
-      invalid_type_error: 'Category must be a string or an array of strings',
-      required_error: 'Category is required',
-    })
-  ),
+  category: z.string({
+    invalid_type_error: 'Category must be a string or an array of strings',
+    required_error: 'Category is required',
+  }),
   variants: z
-    .array(
-      z.string({
-        invalid_type_error: 'Variants must be a string',
-        required_error: 'Variants is required',
-      })
-    )
+    .string({
+      invalid_type_error: 'Variants must be a string',
+      required_error: 'Variants is required',
+    })
+
     .optional(),
   discount: z.coerce
     .number({
@@ -46,12 +43,13 @@ export const addNewProductSchema = z.object({
     })
     .optional(),
   stock: z
-    .number({
+    .string({
       invalid_type_error: 'Stock must be a number',
       required_error: 'Stock is required',
     })
     .min(0, 'Stock cannot be negative')
     .optional(),
+
   // images: z
   //   .array(
   //     z.object({
