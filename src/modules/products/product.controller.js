@@ -98,7 +98,7 @@ export const addNewProductController = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: 'Product add successfully',
+      message: 'Product added successfully',
       data: { product },
     });
   } catch (error) {
@@ -195,7 +195,6 @@ export const getProductsController = async (req, res) => {
     return res.status(500).json({ message: 'Something went wrong' });
   }
 };
-
 
 export const getSingleProductController = async (req, res) => {
   try {

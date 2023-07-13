@@ -1,6 +1,6 @@
-import { productSellSchema } from './product.dto.js';
 import { customerModel } from '../platform-users/user.model.js';
-import { productModel, productSoldModel  } from './product.model.js';
+import { productSellSchema } from './product.dto.js';
+import { productModel, productSoldModel } from './product.model.js';
 
 export const productSellController = async (req, res) => {
   try {
@@ -67,7 +67,7 @@ export const productSellController = async (req, res) => {
     }
 
     return res.status(200).json({
-      message: 'Product sell successful',
+      message: 'Product sell successfully',
     });
   } catch (error) {
     console.log(error);
