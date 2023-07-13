@@ -20,7 +20,7 @@ export const addNewProductController = async (req, res) => {
     const { fields, files } = req;
     const { images = undefined } = files || {};
 
-    const isValidData = await addNewProductSchema.safeParseAsync(req.body);
+    const isValidData = await addNewProductSchema.safeParseAsync(fields);
 
     // find user data with id
     const user = await userModel.findById(id);
@@ -34,13 +34,6 @@ export const addNewProductController = async (req, res) => {
     const { name, price, category, company, description, discount, variants } = isValidData.data;
     let { stock } = isValidData.data;
 
-    // let images = []; // Initialize images as an empty array
-
-    // Convert stock to a number if it is provided
-    if (stock) {
-      stock = +stock;
-    }
-
     let product = await productModel.create({
       name,
       price: +price,
@@ -51,7 +44,7 @@ export const addNewProductController = async (req, res) => {
       discount: discount ? +discount : 0,
       variants: Array.isArray(variants) ? variants : JSON.parse(variants),
       images,
-      stock,
+      stock: isNaN(Number(stock)) ? 0 : Number(stock),
       shopId: id,
     });
 
@@ -186,7 +179,16 @@ export const getProductsController = async (req, res) => {
     return res.status(200).json({
       message: 'Products fetched successfully',
       data: {
-        products,
+        products: products?.map((product) => ({
+          ...product,
+          images: product.images
+            ?.map((image) => {
+              if (typeof image === 'string') return image;
+
+              return null;
+            })
+            ?.filter(Boolean),
+        })),
         totalCount,
       },
     });
@@ -209,7 +211,16 @@ export const getSingleProductController = async (req, res) => {
     return res.status(200).json({
       message: 'Product fetched successfully',
       data: {
-        product,
+        product: {
+          ...product,
+          images: product.images
+            ?.map((image) => {
+              if (typeof image === 'string') return image;
+
+              return null;
+            })
+            ?.filter(Boolean),
+        },
       },
     });
   } catch (error) {
