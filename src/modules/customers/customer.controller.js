@@ -67,6 +67,7 @@ export const updateCustomerController = async (req, res) => {
 export const getCustomersController = async (req, res) => {
   try {
     const { page, limit } = req.query;
+    const value = req.query.value || '';
 
     const options = {
       page: parseInt(page, 10) || 1,
@@ -75,6 +76,11 @@ export const getCustomersController = async (req, res) => {
     };
 
     const result = await customerModel.aggregate([
+      {
+        $match: {
+          name: { $regex: value, $options: 'i' },
+        },
+      },
       {
         $facet: {
           customers: [
@@ -147,11 +153,11 @@ export const deleteCustomerController = async (req, res) => {
 
     await customerModel.deleteOne({ _id: customerId });
 
-    res.status(200).json({ 
-        message: 'Customer deleted successfully',
-        data: {
-            customer: customer
-        }
+    res.status(200).json({
+      message: 'Customer deleted successfully',
+      data: {
+        customer: customer,
+      },
     });
   } catch (error) {
     console.error(error);
