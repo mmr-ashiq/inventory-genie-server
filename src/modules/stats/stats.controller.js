@@ -258,7 +258,7 @@ export const getTopCustomerController = async (req, res) => {
     }, []);
 
     return res.status(200).json({
-      message: 'Top six products fetched successfully',
+      message: 'Top six Customer fetched successfully',
       data: {
         customers: customerMerge,
       },
